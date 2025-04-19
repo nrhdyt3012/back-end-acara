@@ -8,6 +8,11 @@ type TRegister = {
     password: string,
     confirmPassword: string;
 };
+
+type TLogin = {
+    identifier:string;
+    password: string;
+};
 const RegisterValidateSchema = Yup.object({
     fullName: Yup.string().required(),
     username: Yup.string().required(),
