@@ -4,6 +4,7 @@ import router from "./routes/api";
 
 
 import db from "../src/utils/database"
+import authMiddleware from "./middleware/auth.middleware";
 
 async function init () {
     try {

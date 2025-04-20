@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import * as Yup from "yup" ;
 import UserModel from "../models/user.model";
 import { encrypt } from "../utils/encryption";
+import { generateToken } from "../utils/jwt";
+import { IReqUser } from "../middleware/auth.middleware";
 type TRegister = {
     fullName : string;
     username: string;
@@ -37,17 +39,17 @@ export default {
                 fullName, username,email, password,confirmPassword
             });
 
-            const user = new UserModel({
+            const result = await UserModel.create({
                 fullName,
                 email,
                 username,
-                password
+                password,
               });
-              const result = await user.save(); // ini memicu pre("save") dan mengenkripsi password 
+
             res.status(200).json({
                 message: "Success Registration",
                 data : result,
-            })
+            });
         } catch (error) {
             const err = error as unknown as Error;
             res.status(400).json({
@@ -89,13 +91,36 @@ export default {
             return res.status(403).json({
                 message: "user not found",
                 data :null
-            })
-        };
+            });
+        }
+
+        const token = generateToken({
+            id: userByIdenttifier._id,
+            role: userByIdenttifier.role,
+        });
 
         res.status(200).json({
             message:"Login Success",
-            data:userByIdenttifier,
-        })
+            data:token,
+        });
+        } catch (error) {
+            const err = error as unknown as Error;
+            res.status(400).json({
+                message:err.message,
+                data:null
+            });
+        }
+    },
+    async me(req:IReqUser, res:Response) {
+        try {
+            //KENAPA INI Tidak error karean ini diterima oleh express.js hanya dimodifikasi saja 
+            const userData = req.user;
+            const result = await UserModel.findById(userData?.id);
+
+            res.status(200).json({
+                message: "Success get profile",
+                data:result
+            });
         } catch (error) {
             const err = error as unknown as Error;
             res.status(400).json({

@@ -59,6 +59,7 @@ UserSchema.pre("save", function (next){
     next();
 });
 
+//agar password tidak tampil meskipun sudah dienkripsi
 UserSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;
