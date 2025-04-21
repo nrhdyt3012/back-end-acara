@@ -61,6 +61,15 @@ export default {
        
     },
     async login(req:Request, res:Response) {
+        /**
+         #swagger.requestBody = {
+         required: true,
+    content: {
+            "application/json": {
+                schema: { $ref: "#/components/schemas/LoginRequest" }
+            }
+        }         }
+         */
         const {
             identifier,
             password,
@@ -112,6 +121,11 @@ export default {
         }
     },
     async me(req:IReqUser, res:Response) {
+        /**
+         #swagger.security = [{
+         "bearerAuth" :[]
+    }]
+         */
         try {
             //KENAPA INI Tidak error karean ini diterima oleh express.js hanya dimodifikasi saja 
             const userData = req.user;
