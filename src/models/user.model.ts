@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { encrypt } from '../utils/encryption';
 
+import {sendMail, renderMailHtml} from "../utils/mail/mail"
+import { CLIENT_HOST } from '../utils/env';
 export interface User {
     fullName : string;
     username:string;
@@ -10,6 +12,7 @@ export interface User {
     profilePicture: string;
     isActive:boolean;
     activationCode: string;
+    createdAt:string;
 }
 
 const Schema = mongoose.Schema
@@ -57,6 +60,20 @@ UserSchema.pre("save", function (next){
     const user = this;
     user.password = encrypt(user.password);
     next();
+});
+
+//saat berhasil register juga dikirimkan email
+UserSchema.post("save", async function (doc, next) {
+    const user = doc;
+    console.log("Send email to :", user.email);
+
+    const contentMail = await renderMailHtml("registration-success.ejs", {
+        username:user.username,
+        fullname: user.fullName,
+        email : user.email,
+        createdAt : user.createdAt,
+        activationLink : `${CLIENT_HOST}/auth/activation?code=${activationCode}`
+    });
 });
 
 //agar password tidak tampil meskipun sudah dienkripsi

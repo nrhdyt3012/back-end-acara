@@ -1,4 +1,7 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
+import ejs from "ejs"
+//untuk mengetahui lokasi file
+import path from "path"
 import {
     EMAIL_SMTP_HOST,
     EMAIL_SMTP_PASS,
@@ -20,3 +23,25 @@ const transporter = nodemailer.createTransport({
     },
     requireTLS: true,
 });
+
+ export interface ISendMail {
+    from: string;
+    to: string;
+    subject:string;
+    html:string
+ }
+export const sendMail = async({
+   ...mailParams
+}: ISendMail) => {
+    const result = await transporter.sendMail({
+        ...mailParams,
+    });
+    return result;
+};
+
+//untuk merender ejs
+
+export const renderMailHtml = async (template: string, data: any) => {
+    const content = await ejs.renderFile(path.join(__dirname, `templates/${template}`));
+    return content;
+};
