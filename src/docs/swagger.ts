@@ -33,6 +33,22 @@ const doc ={
                 identifier:"Dayat",
                 password:"12345"
             },
+            RegisterRequest: {
+
+                fullName: "member2025",
+                
+                username: "member2025",
+                
+                email: "member2025@yopmail.com",
+                
+                password: "Member2025!",
+                
+                confirmPassword: "Member2025!",
+                
+                },
+                ActivationRequest: {
+                    code: "abcdef",
+                  }
         },
     },
 

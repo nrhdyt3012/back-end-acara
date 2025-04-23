@@ -62,6 +62,10 @@ const UserSchema = new Schema<User>({
 UserSchema.pre("save", function (next){
     const user = this;
     user.password = encrypt(user.password);
+    //sebelum di save password sudah di enkripsi
+    //MongoDB secara otomatis menghasilkan _id bahkan sebelum dokumen disimpan.
+    //Jadi kita bisa menggunakan _id untuk membuat activationCode.
+    user.activationCode = encrypt(user.id); // Gunakan id
     next();
 });
 
@@ -96,6 +100,7 @@ UserSchema.post("save", async function (doc, next) {
 UserSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;
+    delete user.activationCode;
     return user;
 };
 

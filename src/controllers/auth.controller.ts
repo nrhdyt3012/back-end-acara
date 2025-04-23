@@ -106,6 +106,8 @@ export default {
                 username:identifier,
             },
         ],
+        isActive: true,
+        //hanya user yang sudah aktif yang bisa login
            });
 
            if(!userByIdenttifier) {
@@ -164,4 +166,44 @@ export default {
             });
         }
     },
+    async activation(req:Request, res:Response) {
+         /**
+     #swagger.tags = ['Auth']
+     #swagger.requestBody = {
+      required: true,
+      schema: {$ref: "#/components/schemas/ActivationRequest"}
+     }
+     */
+        try {
+
+            //endpoint akan diconsume melalui metthod post
+            //dan mengirimkan data activationCode ke body
+            const {code} = req.body as {code: string};
+
+            const user = await UserModel.findOneAndUpdate({
+                //mencari berdasarkan activationCode
+                activationCode: code,
+            },
+            //property yang diupdate
+            //isActive diubah menjadi true dan activationCode diubah menjadi null
+            {
+                isActive: true,
+            },
+            {
+                //konfigurasi ketika ada perubahan langsung berubah tanpa perlu request ulang
+                //new true artinya data yang diupdate langsung ditampilkan
+                new: true,
+            });
+            res.status(200).json({
+                message: "Success Activation User",
+                data: user,
+            });
+        } catch (error) {
+            const err = error as unknown as Error;
+            res.status(400).json({
+                message:err.message,
+                data:null
+            });
+        }
+},
 };
