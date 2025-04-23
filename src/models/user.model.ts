@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { encrypt } from '../utils/encryption';
 
 import {sendMail, renderMailHtml} from "../utils/mail/mail"
-import { CLIENT_HOST } from '../utils/env';
+import { CLIENT_HOST, EMAIL_SMTP_USER } from '../utils/env';
 export interface User {
     fullName : string;
     username:string;
@@ -12,7 +12,7 @@ export interface User {
     profilePicture: string;
     isActive:boolean;
     activationCode: string;
-    createdAt:string;
+    createdAt?:string;
 }
 
 const Schema = mongoose.Schema
@@ -64,16 +64,29 @@ UserSchema.pre("save", function (next){
 
 //saat berhasil register juga dikirimkan email
 UserSchema.post("save", async function (doc, next) {
+   try {
     const user = doc;
-    console.log("Send email to :", user.email);
+    console.log("Send email to :", user);
 
     const contentMail = await renderMailHtml("registration-success.ejs", {
         username:user.username,
-        fullname: user.fullName,
+        fullName: user.fullName,
         email : user.email,
-        createdAt : user.createdAt,
-        activationLink : `${CLIENT_HOST}/auth/activation?code=${activationCode}`
+        createdAt: user.createdAt,
+        activationLink : `${CLIENT_HOST}/auth/activation?code=${user.activationCode}`
     });
+    await sendMail({
+        //email yg didaftarkan di zoho
+        from: EMAIL_SMTP_USER,
+        to : user.email, 
+        subject : "Aktivasi akun anda",
+        html : contentMail,
+    });
+   } catch (error) {
+    console.log(error)
+   } finally {
+    next();
+   }
 });
 
 //agar password tidak tampil meskipun sudah dienkripsi
