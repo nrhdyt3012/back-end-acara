@@ -22,13 +22,16 @@ const UserSchema = new Schema<User>({
         type:Schema.Types.String,
         required: true
     },
+    //Ditambahkan fitur unique untuk username dan email agar tidak ada yang sama
     username: {
         type:Schema.Types.String,
-        required: true
+        required: true,
+        unique: true,
     },
     email: {
         type:Schema.Types.String,
-        required: true
+        required: true,
+        unique: true,
     },
     password: {
         type:Schema.Types.String,
