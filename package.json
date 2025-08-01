@@ -33,7 +33,7 @@
     "nodemailer": "^6.9.14",
     "nodemon": "3.1.4",
     "swagger-autogen": "2.23.7",
-    "swagger-ui-express": "4.0.3",
+    "swagger-ui-express": "^4.6.3",
     "ts-node": "10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
