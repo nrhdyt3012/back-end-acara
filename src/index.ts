@@ -19,6 +19,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const PORT = 3000;
+const day = "nothing";
 
 app.get("/", (req, res) => {
   res.status(200).json({
