@@ -19,7 +19,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const PORT = 3000;
-
+const dat = "day"
 app.get("/", (req, res) => {
   res.status(200).json({
     message:"Server is running",
